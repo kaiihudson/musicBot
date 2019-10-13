@@ -58,7 +58,7 @@ async function execute(message, serverQueue) {
 	};
 
 	if (!serverQueue) {
-		const queueContruct = {
+		const queueConstruct = {
 			textChannel: message.channel,
 			voiceChannel: voiceChannel,
 			connection: null,
@@ -67,14 +67,14 @@ async function execute(message, serverQueue) {
 			playing: true,
 		};
 
-		queue.set(message.guild.id, queueContruct);
+		queue.set(message.guild.id, queueConstruct);
 
-		queueContruct.songs.push(song);
+		queueConstruct.songs.push(song);
 
 		try {
 			var connection = await voiceChannel.join();
-			queueContruct.connection = connection;
-			play(message.guild, queueContruct.songs[0]);
+			queueConstruct.connection = connection;
+			play(message.guild, queueConstruct.songs[0]);
 		} catch (err) {
 			console.log(err);
 			queue.delete(message.guild.id);
