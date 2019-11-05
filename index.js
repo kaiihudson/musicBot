@@ -25,7 +25,7 @@ client.on('message', async message => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;
 	//if message is not in music channel return
-	// if (message.channel != 'Music') return;
+	//if (message.channel != 'Music') return;
 	console.log('message was sent on ' + message.channel)
 	const serverQueue = queue.get(message.guild.id);
 
