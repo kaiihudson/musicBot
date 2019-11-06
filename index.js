@@ -44,10 +44,9 @@ async function execute(message, serverQueue) {
 		maxResults: 1,
 		key: args[1]
 	}
-	search( opts, function(err, results) {
+	search('jsconf', opts, function(err, results) {
 		if(err) return console.log(err);
-	   
-		const ytUrl = results;
+	    const ytUrl = results;
 	  });
 	console.log(ytUrl)
 	const voiceChannel = message.member.voiceChannel;
