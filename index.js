@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const {	prefix,	token} = require('./config.json');
 const ytdl = require('ytdl-core');
-
 const search = require('youtube-search')
 const client = new Discord.Client();
 const queue = new Map();
@@ -45,11 +44,12 @@ async function execute(message, serverQueue) {
 		maxResults: 1,
 		key: args[1]
 	}
-	search('jsconf', opts, function(err, results) {
+	search( opts, function(err, results) {
 		if(err) return console.log(err);
 	   
-		const url = results;
+		const ytUrl = results;
 	  });
+	console.log(ytUrl)
 	const voiceChannel = message.member.voiceChannel;
 	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
 	const permissions = voiceChannel.permissionsFor(message.client.user);
