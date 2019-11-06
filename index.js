@@ -1,12 +1,8 @@
 const Discord = require('discord.js');
-const {
-	prefix,
-	token,
-} = require('./config.json');
+const {	prefix,	token} = require('./config.json');
 const ytdl = require('ytdl-core');
-
+const ytSearch = require( 'yt-search');
 const client = new Discord.Client();
-
 const queue = new Map();
 
 client.once('ready', () => {
@@ -87,28 +83,28 @@ async function execute(message, serverQueue) {
 	}
 
 }
-
+//skip current song
 function skip(message, serverQueue) {
 	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
 	if (!serverQueue) return message.channel.send('There is no song that I could skip!');
 	serverQueue.connection.dispatcher.end();
 }
-
+//stop streaming
 function stop(message, serverQueue) {
 	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
 	serverQueue.songs = [];
 	serverQueue.connection.dispatcher.end();
 }
-
+//add song to queue, if queue is empty start new queue
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
-
+	//if no song is to be played, leave the channel
 	if (!song) {
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
 	}
-
+	//send a song to the downloader and stream it
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', () => {
 			console.log('Music ended!');
