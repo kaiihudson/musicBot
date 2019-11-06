@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
 const {	prefix,	token} = require('./config.json');
 const ytdl = require('ytdl-core');
-const ytSearch = require( 'yt-search');
+
+const search = require('youtube-search')
 const client = new Discord.Client();
 const queue = new Map();
 
@@ -20,7 +21,8 @@ client.once('disconnect', () => {
 client.on('message', async message => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;
-
+	if (message.channel.name != 'music-test') return;
+	console.log('message was sent on ' + message.channel.name)
 	const serverQueue = queue.get(message.guild.id);
 
 	if (message.content.startsWith(`${prefix}play`)) {
@@ -39,7 +41,10 @@ client.on('message', async message => {
 
 async function execute(message, serverQueue) {
 	const args = message.content.split(' ');
-
+	const opts = {
+		maxResults: 1,
+		key: args[1]
+	}
 	const voiceChannel = message.member.voiceChannel;
 	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
 	const permissions = voiceChannel.permissionsFor(message.client.user);
@@ -47,7 +52,7 @@ async function execute(message, serverQueue) {
 		return message.channel.send('I need the permissions to join and speak in your voice channel!');
 	}
 
-	const songInfo = await ytdl.getInfo(args[1]);
+	const songInfo = await ytdl.getInfo(url);
 	const song = {
 		title: songInfo.title,
 		url: songInfo.video_url,
@@ -116,5 +121,8 @@ function play(guild, song) {
 		});
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 }
-
+function search('jsconf',opts, function(err, results) {
+	if (err) return console.log(err);
+	
+	const url = results_}))
 client.login(token);
