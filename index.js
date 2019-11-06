@@ -1,12 +1,8 @@
 const Discord = require('discord.js');
-const {
-	prefix,
-	token,
-} = require('./config.json');
+const {	prefix,	token} = require('./config.json');
 const ytdl = require('ytdl-core');
-
+const search = require('youtube-search')
 const client = new Discord.Client();
-
 const queue = new Map();
 
 client.once('ready', () => {
@@ -24,9 +20,14 @@ client.once('disconnect', () => {
 client.on('message', async message => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;
+<<<<<<< HEAD
 	//if message is not in music channel return
 	//if (message.channel != 'Music') return;
 	console.log('message was sent on ' + message.channel)
+=======
+	if (message.channel.name != 'music-test') return;
+	console.log('message was sent on ' + message.channel.name)
+>>>>>>> 3a94d3d2455477f6f40008e25f1e90ed072bc3da
 	const serverQueue = queue.get(message.guild.id);
 
 	if (message.content.startsWith(`${prefix}play`)) {
@@ -45,7 +46,16 @@ client.on('message', async message => {
 
 async function execute(message, serverQueue) {
 	const args = message.content.split(' ');
-
+	const opts = {
+		key: args[1],
+		maxResults: 1
+	}
+	var ytUrl
+	search('jsconf', opts, function(err, results) {
+		if(err) return console.log(err);
+	    var ytUrl = results;
+	  });
+	console.log(ytUrl)
 	const voiceChannel = message.member.voiceChannel;
 	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
 	const permissions = voiceChannel.permissionsFor(message.client.user);
@@ -53,7 +63,7 @@ async function execute(message, serverQueue) {
 		return message.channel.send('I need the permissions to join and speak in your voice channel!');
 	}
 
-	const songInfo = await ytdl.getInfo(args[1]);
+	const songInfo = await ytdl.getInfo(url);
 	const song = {
 		title: songInfo.title,
 		url: songInfo.video_url,
@@ -89,28 +99,28 @@ async function execute(message, serverQueue) {
 	}
 
 }
-
+//skip current song
 function skip(message, serverQueue) {
 	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
 	if (!serverQueue) return message.channel.send('There is no song that I could skip!');
 	serverQueue.connection.dispatcher.end();
 }
-
+//stop streaming
 function stop(message, serverQueue) {
 	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
 	serverQueue.songs = [];
 	serverQueue.connection.dispatcher.end();
 }
-
+//add song to queue, if queue is empty start new queue
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
-
+	//if no song is to be played, leave the channel
 	if (!song) {
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
 	}
-
+	//send a song to the downloader and stream it
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', () => {
 			console.log('Music ended!');
