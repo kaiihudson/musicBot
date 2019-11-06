@@ -41,8 +41,8 @@ client.on('message', async message => {
 async function execute(message, serverQueue) {
 	const args = message.content.split(' ');
 	const opts = {
-		maxResults: 1,
-		key: args[1]
+		key: args[1],
+		maxResults: 1
 	}
 	var ytUrl
 	search('jsconf', opts, function(err, results) {
