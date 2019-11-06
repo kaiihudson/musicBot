@@ -45,6 +45,11 @@ async function execute(message, serverQueue) {
 		maxResults: 1,
 		key: args[1]
 	}
+	search('jsconf', opts, function(err, results) {
+		if(err) return console.log(err);
+	   
+		const url = results;
+	  });
 	const voiceChannel = message.member.voiceChannel;
 	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
 	const permissions = voiceChannel.permissionsFor(message.client.user);
@@ -121,8 +126,5 @@ function play(guild, song) {
 		});
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 }
-function search('jsconf',opts, function(err, results) {
-	if (err) return console.log(err);
-	
-	const url = results_}))
+
 client.login(token);
